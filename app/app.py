@@ -1,26 +1,71 @@
 import streamlit as st
 import pickle
-import sys
-import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+# Page configuration
+st.set_page_config(
+    page_title="MBTI Personality Predictor",
+    page_icon="🧠",
+    layout="centered"
+)
 
-from src.preprocess.preprocess import clean_text
+# Title
+st.title("🧠 MBTI Personality Predictor")
+st.write("This AI model predicts your MBTI personality type based on your text.")
 
-model = pickle.load(open("Models/mbti_model.pkl", "rb"))
-vectorizer = pickle.load(open("Models/vectorizer.pkl", "rb"))
+# Sidebar
+st.sidebar.title("About Project")
+st.sidebar.write(
+"""
+This app predicts **MBTI personality types** using Machine Learning.
 
-st.title("Personality Prediction from Text")
+Model used:
+- TF-IDF Vectorizer
+- Machine Learning Classifier
 
-user_input = st.text_area("Enter your text")
+Enter a paragraph about yourself and see your predicted personality type.
+"""
+)
 
+# Load model and vectorizer
+model = pickle.load(open("models/mbti_model.pkl", "rb"))
+vectorizer = pickle.load(open("models/vectorizer.pkl", "rb"))
+
+# Input text
+st.subheader("Enter your text")
+user_input = st.text_area(
+    "Write something about your thoughts, behaviour, or opinions:",
+    height=200
+)
+
+# Predict button
 if st.button("Predict Personality"):
 
-    cleaned = clean_text(user_input)
+    if user_input.strip() == "":
+        st.warning("⚠️ Please enter some text first.")
+    else:
+        with st.spinner("Analyzing your personality..."):
 
-    vectorized = vectorizer.transform([cleaned])
+            # Transform input
+            input_vector = vectorizer.transform([user_input])
 
-    prediction = model.predict(vectorized)
+            # Predict
+            prediction = model.predict(input_vector)[0]
 
-    st.success(f"Predicted Personality Type: {prediction[0]}")
-    
+        # Display result
+        st.success(f"🎯 Predicted Personality Type: **{prediction}**")
+
+        st.info(
+        """
+        MBTI Types include:
+        INTJ, INTP, ENTJ, ENTP,
+        INFJ, INFP, ENFJ, ENFP,
+        ISTJ, ISFJ, ESTJ, ESFJ,
+        ISTP, ISFP, ESTP, ESFP
+        """
+        )
+
+# Footer
+st.markdown("---")
+st.write("Built with ❤️ using Streamlit")
+st.markdown("---")
+st.markdown("👩‍💻 **Built by J1507Dharshini K** | Data Science Project")
