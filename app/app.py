@@ -84,8 +84,12 @@ st.markdown('<p class="subtitle">Explore your personality with AI</p>', unsafe_a
 
 # ---------- LOAD MODEL ----------
 
-model = pickle.load(open("Models/mbti_model.pkl","rb"))
-vectorizer = pickle.load(open("Models/vectorizer.pkl","rb"))
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model = pickle.load(open(os.path.join(BASE_DIR,"../Models/mbti_model.pkl"),"rb"))
+vectorizer = pickle.load(open(os.path.join(BASE_DIR,"../Models/vectorizer.pkl"),"rb"))
 
 # ---------- MBTI DATA ----------
 
