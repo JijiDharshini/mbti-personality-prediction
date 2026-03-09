@@ -1,4 +1,6 @@
 import streamlit as st
+import sklearn
+st.write("Sklearn version:", sklearn.__version__)
 import pickle
 import time
 import random
